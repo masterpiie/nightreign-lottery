@@ -6,6 +6,7 @@
 <title>黑夜君臨 角色抽選</title>
 
 <style>
+/* 基本樣式 */
 body{
     margin:0;
     background:#000;
@@ -18,6 +19,7 @@ h1{
     margin-top:20px;
 }
 
+/* 容器 */
 .container{
     display:flex;
     justify-content:center;
@@ -26,10 +28,8 @@ h1{
     flex-wrap:wrap;
 }
 
+/* 抽選框基礎樣式 */
 .box{
-    width:290px;
-    height:420px;
-    background:#111;
     display:flex;
     align-items:center;
     justify-content:center;
@@ -37,17 +37,29 @@ h1{
     border-radius:15px;
 }
 
+/* 邊框顏色與陰影 */
 .red{border-color:#ff3b3b; box-shadow:0 0 20px #ff3b3b;}
 .green{border-color:#00ff99; box-shadow:0 0 20px #00ff99;}
 .blue{border-color:#00ccff; box-shadow:0 0 20px #00ccff;}
 
 img{
-    width:270px;
-    height:400px;
     object-fit:cover;
     border-radius:10px;
 }
 
+/* 桌機尺寸 */
+@media (min-width:769px){
+    .box{width:290px; height:420px;}
+    img{width:270px; height:400px;}
+}
+
+/* 手機尺寸 */
+@media (max-width:768px){
+    .box{width:200px; height:200px;}
+    img{width:180px; height:180px;}
+}
+
+/* 抽選按鈕 */
 .buttons{
     margin-top:40px;
 }
@@ -72,47 +84,91 @@ button:hover{
 
 <body>
 
+<!-- 標題 -->
 <h1>Let me <span style="color:#b8860b;">make your choice</span> for you &#x2764;</h1>
 
+<!-- 抽選框 -->
 <div class="container">
-    <div class="box red"><img id="red" src="images/libra.png"></div>
-    <div class="box green"><img id="green" src="images/libra.png"></div>
-    <div class="box blue"><img id="blue" src="images/libra.png"></div>
+    <div class="box red">
+        <img id="red" src="images/libra.png" 
+             data-large="images/1.png" data-small="images/small/1.png"
+             data-placeholder-large="images/libra.png" data-placeholder-small="images/small/libra.png">
+    </div>
+    <div class="box green">
+        <img id="green" src="images/libra.png" 
+             data-large="images/2.png" data-small="images/small/2.png"
+             data-placeholder-large="images/libra.png" data-placeholder-small="images/small/libra.png">
+    </div>
+    <div class="box blue">
+        <img id="blue" src="images/libra.png" 
+             data-large="images/3.png" data-small="images/small/3.png"
+             data-placeholder-large="images/libra.png" data-placeholder-small="images/small/libra.png">
+    </div>
 </div>
 
+<!-- 按鈕 -->
 <div class="buttons">
     <button class="repeat" onclick="start(true)">抽選（可重複）</button>
     <button class="unique" onclick="start(false)">抽選（不重複）</button>
-</div>    
+</div>
 
+<!-- 抽完才出現的文字 -->
 <h1 id="itsdone" style="display:none;">It is done.</h1>
 
 <script>
+//------------------------
+// 圖片資料
+//------------------------
 
-const characters = [
-    "images/1.png",
-    "images/2.png",
-    "images/3.png",
-    "images/4.png",
-    "images/5.png",
-    "images/6.png",
-    "images/7.png",
-    "images/8.png",
-    "images/9.png",
-    "images/10.png"
+// 桌機用大圖
+const charactersLarge = [
+    "images/1.png","images/2.png","images/3.png","images/4.png","images/5.png",
+    "images/6.png","images/7.png","images/8.png","images/9.png","images/10.png"
 ];
 
-let running = false;
+// 手機用小圖
+const charactersSmall = [
+    "images/small/1.png","images/small/2.png","images/small/3.png","images/small/4.png","images/small/5.png",
+    "images/small/6.png","images/small/7.png","images/small/8.png","images/small/9.png","images/small/10.png"
+];
 
+let running = false; // 是否正在抽選
+
+//------------------------
+// 工具函式
+//------------------------
+
+// 隨機取陣列中的一個值
 function getRandom(arr){
     return arr[Math.floor(Math.random()*arr.length)];
 }
 
+// 判斷是否手機
+function isMobile() {
+    return window.innerWidth <= 768;
+}
+
+// 取得抽選池
+function getPool() {
+    return isMobile() ? [...charactersSmall] : [...charactersLarge];
+}
+
+// 更新每個框的圖片 (桌機/手機)
+function updateImagesForDevice() {
+    const boxes = ["red","green","blue"];
+    boxes.forEach(id => {
+        const img = document.getElementById(id);
+        img.src = isMobile() ? img.dataset.small : img.dataset.large;
+    });
+}
+
+//------------------------
+// 抽選動畫
+//------------------------
 function spin(boxId, duration, pool){
     return new Promise(resolve=>{
         let delay = 60;
         let elapsed = 0;
-        let finalPick;
 
         function roll(){
             let pick = getRandom(pool);
@@ -123,8 +179,7 @@ function spin(boxId, duration, pool){
                 delay += 8; // 減速效果
                 setTimeout(roll, delay);
             }else{
-                finalPick = pick;
-                resolve(finalPick);
+                resolve(pick);
             }
         }
 
@@ -132,46 +187,56 @@ function spin(boxId, duration, pool){
     });
 }
 
+//------------------------
+// 抽選主程式
+//------------------------
 async function start(allowDuplicate){
-
-    if(running) return;
+    if(running) return; // 防止重複點擊
     running = true;
 
-    //先清空畫面
-    document.getElementById("red").src = "images/libra.png";
-    document.getElementById("green").src = "images/libra.png";
-    document.getElementById("blue").src = "images/libra.png";
-    //先隱藏 "It is done."
-    document.getElementById("itsdone").style.display = "none";
-    //等 300ms 再開始
-    await new Promise(r => setTimeout(r, 300));
-    
-    let pool = [...characters];
+    const isMob = isMobile(); // 判斷裝置
 
+    // 先清空畫面，依裝置大小切換占位圖
+    document.getElementById("red").src = isMob ? 
+        document.getElementById("red").dataset.placeholderSmall : 
+        document.getElementById("red").dataset.placeholderLarge;
+    document.getElementById("green").src = isMob ? 
+        document.getElementById("green").dataset.placeholderSmall : 
+        document.getElementById("green").dataset.placeholderLarge;
+    document.getElementById("blue").src = isMob ? 
+        document.getElementById("blue").dataset.placeholderSmall : 
+        document.getElementById("blue").dataset.placeholderLarge;
+
+    // 隱藏完成文字
+    document.getElementById("itsdone").style.display = "none";
+
+    // 等 300ms 再開始抽選
+    await new Promise(r => setTimeout(r, 300));
+
+    let pool = getPool();
+
+    // 逐個抽選
     let red = await spin("red",1500,pool);
-    if(!allowDuplicate){
-        pool = pool.filter(x=>x!==red);
-    }
+    if(!allowDuplicate) pool = pool.filter(x=>x!==red);
 
     let green = await spin("green",2300,pool);
-    if(!allowDuplicate){
-        pool = pool.filter(x=>x!==green);
-    }
+    if(!allowDuplicate) pool = pool.filter(x=>x!==green);
 
     await spin("blue",3100,pool);
-    //顯示完成文字
+
+    // 顯示完成文字
     document.getElementById("itsdone").style.display = "block";
+
     running = false;
 }
+
+//------------------------
+// 自動切換圖片尺寸
+//------------------------
+window.addEventListener("load", updateImagesForDevice);
+window.addEventListener("resize", updateImagesForDevice);
 
 </script>
 
 </body>
 </html>
-
-
-
-
-
-
-
