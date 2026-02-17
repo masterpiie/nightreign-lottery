@@ -72,7 +72,7 @@ button:hover{
 
 <body>
 
-<h1>Let me make your choice for you &#x2764;</h1>
+<h1>Let me <span style="color:#b8860b;">make your choice</span> for you &#x2764;</h1>
 
 <div class="container">
     <div class="box red"><img id="red" src="images/libra.png"></div>
@@ -83,7 +83,9 @@ button:hover{
 <div class="buttons">
     <button class="repeat" onclick="start(true)">抽選（可重複）</button>
     <button class="unique" onclick="start(false)">抽選（不重複）</button>
-</div>
+</div>    
+
+<h1 id="itsdone" style="display:none;">It is done.</h1>
 
 <script>
 
@@ -139,7 +141,8 @@ async function start(allowDuplicate){
     document.getElementById("red").src = "images/libra.png";
     document.getElementById("green").src = "images/libra.png";
     document.getElementById("blue").src = "images/libra.png";
-
+    //先隱藏 "It is done."
+    document.getElementById("itsdone").style.display = "none";
     //等 300ms 再開始
     await new Promise(r => setTimeout(r, 300));
     
@@ -156,7 +159,8 @@ async function start(allowDuplicate){
     }
 
     await spin("blue",3100,pool);
-
+    //顯示完成文字
+    document.getElementById("itsdone").style.display = "block";
     running = false;
 }
 
@@ -164,6 +168,7 @@ async function start(allowDuplicate){
 
 </body>
 </html>
+
 
 
 
