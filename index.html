@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>黑夜君臨 角色拉霸抽選</title>
+
+<style>
+body{
+    margin:0;
+    background:#000;
+    color:#fff;
+    text-align:center;
+    font-family:Arial, Helvetica, sans-serif;
+}
+
+h1{
+    margin-top:20px;
+}
+
+.container{
+    display:flex;
+    justify-content:center;
+    gap:30px;
+    margin-top:40px;
+    flex-wrap:wrap;
+}
+
+.box{
+    width:160px;
+    height:160px;
+    background:#111;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    border:6px solid;
+    border-radius:15px;
+}
+
+.red{border-color:#ff3b3b; box-shadow:0 0 20px #ff3b3b;}
+.green{border-color:#00ff99; box-shadow:0 0 20px #00ff99;}
+.blue{border-color:#00ccff; box-shadow:0 0 20px #00ccff;}
+
+img{
+    width:140px;
+    height:140px;
+    object-fit:cover;
+    border-radius:10px;
+}
+
+.buttons{
+    margin-top:40px;
+}
+
+button{
+    padding:12px 25px;
+    font-size:18px;
+    margin:10px;
+    cursor:pointer;
+    border:none;
+    border-radius:8px;
+}
+
+.repeat{background:#444;color:white;}
+.unique{background:#ffcc00;color:black;}
+
+button:hover{
+    opacity:0.8;
+}
+</style>
+</head>
+
+<body>
+
+<h1>黑夜君臨 角色拉霸抽選</h1>
+
+<div class="container">
+    <div class="box red"><img id="red"></div>
+    <div class="box green"><img id="green"></div>
+    <div class="box blue"><img id="blue"></div>
+</div>
+
+<div class="buttons">
+    <button class="repeat" onclick="start(true)">抽選（可重複）</button>
+    <button class="unique" onclick="start(false)">抽選（不重複）</button>
+</div>
+
+<script>
+
+const characters = [
+    "images/1.png",
+    "images/2.png",
+    "images/3.png",
+    "images/4.png",
+    "images/5.png",
+    "images/6.png",
+    "images/7.png",
+    "images/8.png",
+    "images/9.png",
+    "images/10.png"
+];
+
+let running = false;
+
+function getRandom(arr){
+    return arr[Math.floor(Math.random()*arr.length)];
+}
+
+function spin(boxId, duration, pool){
+    return new Promise(resolve=>{
+        let delay = 60;
+        let elapsed = 0;
+        let finalPick;
+
+        function roll(){
+            let pick = getRandom(pool);
+            document.getElementById(boxId).src = pick;
+            elapsed += delay;
+
+            if(elapsed < duration){
+                delay += 8; // 減速效果
+                setTimeout(roll, delay);
+            }else{
+                finalPick = pick;
+                resolve(finalPick);
+            }
+        }
+
+        roll();
+    });
+}
+
+async function start(allowDuplicate){
+
+    if(running) return;
+    running = true;
+
+    let pool = [...characters];
+
+    let red = await spin("red",1500,pool);
+    if(!allowDuplicate){
+        pool = pool.filter(x=>x!==red);
+    }
+
+    let green = await spin("green",2300,pool);
+    if(!allowDuplicate){
+        pool = pool.filter(x=>x!==green);
+    }
+
+    await spin("blue",3100,pool);
+
+    running = false;
+}
+
+</script>
+
+</body>
+</html>
