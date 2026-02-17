@@ -75,9 +75,9 @@ button:hover{
 <h1>黑夜君臨 角色抽選</h1>
 
 <div class="container">
-    <div class="box red"><img id="red"></div>
-    <div class="box green"><img id="green"></div>
-    <div class="box blue"><img id="blue"></div>
+    <div class="box red"><img id="red" src="images/libra.png"></div>
+    <div class="box green"><img id="green" src="images/libra.png"></div>
+    <div class="box blue"><img id="blue" src="images/libra.png"></div>
 </div>
 
 <div class="buttons">
@@ -136,9 +136,9 @@ async function start(allowDuplicate){
     running = true;
 
     //先清空畫面
-    document.getElementById("red").src = "";
-    document.getElementById("green").src = "";
-    document.getElementById("blue").src = "";
+    document.getElementById("red").src = "images/libra.png";
+    document.getElementById("green").src = "images/libra.png";
+    document.getElementById("blue").src = "images/libra.png";
 
     //等 300ms 再開始
     await new Promise(r => setTimeout(r, 300));
@@ -164,6 +164,7 @@ async function start(allowDuplicate){
 
 </body>
 </html>
+
 
 
 
