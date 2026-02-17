@@ -84,7 +84,7 @@ button:hover{
 
 <body>
 
-<!-- 標題 -->
+<!-- 標題，暗金色字 -->
 <h1>Let me <span style="color:#b8860b;">make your choice</span> for you &#x2764;</h1>
 
 <!-- 抽選框 -->
@@ -153,15 +153,6 @@ function getPool() {
     return isMobile() ? [...charactersSmall] : [...charactersLarge];
 }
 
-// 更新每個框的圖片 (桌機/手機)
-function updateImagesForDevice() {
-    const boxes = ["red","green","blue"];
-    boxes.forEach(id => {
-        const img = document.getElementById(id);
-        img.src = isMobile() ? img.dataset.small : img.dataset.large;
-    });
-}
-
 //------------------------
 // 抽選動畫
 //------------------------
@@ -196,7 +187,7 @@ async function start(allowDuplicate){
 
     const isMob = isMobile(); // 判斷裝置
 
-    // 先清空畫面，依裝置大小切換占位圖
+    // 清空畫面，依裝置大小切換占位圖
     document.getElementById("red").src = isMob ? 
         document.getElementById("red").dataset.placeholderSmall : 
         document.getElementById("red").dataset.placeholderLarge;
@@ -229,13 +220,6 @@ async function start(allowDuplicate){
 
     running = false;
 }
-
-//------------------------
-// 自動切換圖片尺寸
-//------------------------
-window.addEventListener("load", updateImagesForDevice);
-window.addEventListener("resize", updateImagesForDevice);
-
 </script>
 
 </body>
