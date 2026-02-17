@@ -6,7 +6,9 @@
 <title>黑夜君臨 角色抽選</title>
 
 <style>
-/* 基本樣式 */
+/* -------------------------
+   基本樣式
+------------------------- */
 body{
     margin:0;
     background:#000;
@@ -90,19 +92,28 @@ button:hover{
 <!-- 抽選框 -->
 <div class="container">
     <div class="box red">
-        <img id="red" src="images/libra.png" 
-             data-large="images/1.png" data-small="images/small/1.png"
-             data-placeholder-large="images/libra.png" data-placeholder-small="images/small/libra.png">
+        <img id="red" 
+             src="images/libra.png" 
+             data-large="images/1.png" 
+             data-small="images/small/1.png"
+             data-placeholder-large="images/libra.png" 
+             data-placeholder-small="images/small/libra.png">
     </div>
     <div class="box green">
-        <img id="green" src="images/libra.png" 
-             data-large="images/2.png" data-small="images/small/2.png"
-             data-placeholder-large="images/libra.png" data-placeholder-small="images/small/libra.png">
+        <img id="green" 
+             src="images/libra.png" 
+             data-large="images/2.png" 
+             data-small="images/small/2.png"
+             data-placeholder-large="images/libra.png" 
+             data-placeholder-small="images/small/libra.png">
     </div>
     <div class="box blue">
-        <img id="blue" src="images/libra.png" 
-             data-large="images/3.png" data-small="images/small/3.png"
-             data-placeholder-large="images/libra.png" data-placeholder-small="images/small/libra.png">
+        <img id="blue" 
+             src="images/libra.png" 
+             data-large="images/3.png" 
+             data-small="images/small/3.png"
+             data-placeholder-large="images/libra.png" 
+             data-placeholder-small="images/small/libra.png">
     </div>
 </div>
 
@@ -116,17 +127,15 @@ button:hover{
 <h1 id="itsdone" style="display:none;">It is done.</h1>
 
 <script>
-//------------------------
+// -------------------------
 // 圖片資料
-//------------------------
+// -------------------------
 
-// 桌機用大圖
 const charactersLarge = [
     "images/1.png","images/2.png","images/3.png","images/4.png","images/5.png",
     "images/6.png","images/7.png","images/8.png","images/9.png","images/10.png"
 ];
 
-// 手機用小圖
 const charactersSmall = [
     "images/small/1.png","images/small/2.png","images/small/3.png","images/small/4.png","images/small/5.png",
     "images/small/6.png","images/small/7.png","images/small/8.png","images/small/9.png","images/small/10.png"
@@ -134,16 +143,14 @@ const charactersSmall = [
 
 let running = false; // 是否正在抽選
 
-//------------------------
+// -------------------------
 // 工具函式
-//------------------------
+// -------------------------
 
-// 隨機取陣列中的一個值
 function getRandom(arr){
     return arr[Math.floor(Math.random()*arr.length)];
 }
 
-// 判斷是否手機
 function isMobile() {
     return window.innerWidth <= 768;
 }
@@ -153,9 +160,9 @@ function getPool() {
     return isMobile() ? [...charactersSmall] : [...charactersLarge];
 }
 
-//------------------------
+// -------------------------
 // 抽選動畫
-//------------------------
+// -------------------------
 function spin(boxId, duration, pool){
     return new Promise(resolve=>{
         let delay = 60;
@@ -178,16 +185,16 @@ function spin(boxId, duration, pool){
     });
 }
 
-//------------------------
+// -------------------------
 // 抽選主程式
-//------------------------
+// -------------------------
 async function start(allowDuplicate){
-    if(running) return; // 防止重複點擊
+    if(running) return;
     running = true;
 
-    const isMob = isMobile(); // 判斷裝置
+    const isMob = isMobile();
 
-    // 清空畫面，依裝置大小切換占位圖
+    // 清空畫面，使用桌機/手機占位圖
     document.getElementById("red").src = isMob ? 
         document.getElementById("red").dataset.placeholderSmall : 
         document.getElementById("red").dataset.placeholderLarge;
@@ -198,10 +205,8 @@ async function start(allowDuplicate){
         document.getElementById("blue").dataset.placeholderSmall : 
         document.getElementById("blue").dataset.placeholderLarge;
 
-    // 隱藏完成文字
     document.getElementById("itsdone").style.display = "none";
 
-    // 等 300ms 再開始抽選
     await new Promise(r => setTimeout(r, 300));
 
     let pool = getPool();
@@ -215,11 +220,26 @@ async function start(allowDuplicate){
 
     await spin("blue",3100,pool);
 
-    // 顯示完成文字
     document.getElementById("itsdone").style.display = "block";
 
     running = false;
 }
+
+// -------------------------
+// 頁面載入時自動切換初始占位圖
+// -------------------------
+window.addEventListener("load", ()=>{
+    const isMob = isMobile();
+    document.getElementById("red").src = isMob ? 
+        document.getElementById("red").dataset.placeholderSmall : 
+        document.getElementById("red").dataset.placeholderLarge;
+    document.getElementById("green").src = isMob ? 
+        document.getElementById("green").dataset.placeholderSmall : 
+        document.getElementById("green").dataset.placeholderLarge;
+    document.getElementById("blue").src = isMob ? 
+        document.getElementById("blue").dataset.placeholderSmall : 
+        document.getElementById("blue").dataset.placeholderLarge;
+});
 </script>
 
 </body>
