@@ -135,6 +135,14 @@ async function start(allowDuplicate){
     if(running) return;
     running = true;
 
+    //先清空畫面
+    document.getElementById("red").src = "";
+    document.getElementById("green").src = "";
+    document.getElementById("blue").src = "";
+
+    //等 300ms 再開始
+    await new Promise(r => setTimeout(r, 300));
+    
     let pool = [...characters];
 
     let red = await spin("red",1500,pool);
@@ -156,5 +164,6 @@ async function start(allowDuplicate){
 
 </body>
 </html>
+
 
 
